@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CheaterBomber</string>
+    <string name="Title">骗子轰炸机qwp</string>
+    <string name="urlTitle">Url:</string>
+    <string name="StartBtnText">开始爆破</string>
+    <string name="title_activity_entry">EntryActivity</string>
+</resources>
