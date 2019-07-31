@@ -1,5 +1,7 @@
 package yanchan;
 
+import android.util.Log;
+
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -26,6 +28,8 @@ public class Go {
     private int failNumber = 0;//失败数量
     private int dosNumber = 0;//总数量
     private long delayed = -1;//请求间隔
+
+    private StringBuilder builder = new StringBuilder();
 
     public Go(String url) {
         this(url, null);
@@ -75,6 +79,7 @@ public class Go {
      */
     public void start() {
         isStart = true;
+        builder = new StringBuilder();
         successNumber = 0;
         failNumber = 0;
         for (int i = 0; i < threadNumber; i++) {
@@ -103,6 +108,13 @@ public class Go {
         return failNumber;
     }
 
+    public String getLog() {
+        if (builder.length() > 2000) {
+            builder.delete(0, 500);
+        }
+        return builder.toString();
+    }
+
     private void thread() {
         new Thread() {
             @Override
@@ -118,7 +130,12 @@ public class Go {
                         }
                     } catch (Exception e) {
                         failNumber++;
-                        e.printStackTrace();
+//                        e.printStackTrace();
+                        if (e instanceof SocketTimeoutException) {
+                            Log.e("CheaterBomber:", "链接超时");
+                            builder.append("错误:链接超时\n");
+                        } else
+                            e.printStackTrace();
                     }
                     dosNumber++;
                 }
@@ -126,8 +143,11 @@ public class Go {
         }.start();
     }
 
-    private void play() throws Exception {
+    private void play() throws IOException {
         URL u = new URL(url);
+
+        String name = "", pass = "";
+
         HttpURLConnection connection = (HttpURLConnection) u.openConnection();
         if (RequestMethod == 1) {
             connection.setDoOutput(true);
@@ -145,8 +165,8 @@ public class Go {
         if (randomData && datas != null && !datas.isEmpty()) {
             Random random = new Random();
             int id = random.nextInt(999999) + 111111;//随机六位数
-            String name = datas.get("name") + id;
-            String pass = datas.get("pass") + id;
+            name = datas.get("name") + "=" + id;
+            pass = datas.get("pass") + "=" + id;
             data = name + "&" + pass + "&" + datas.get("data");
         }
         if (data != null) {
@@ -166,6 +186,7 @@ public class Go {
             }
             reader.close();
             System.out.println(sb.toString());
+            builder.append("Succeeded with the result 200" + name + pass + "\n");
         }
         connection.disconnect();
 

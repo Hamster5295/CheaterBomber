@@ -2,17 +2,26 @@ package com.hamster5295.qq_harker_bomber;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
 import yanchan.Go;
@@ -26,30 +35,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(this);
+
         final Button btn_Start = findViewById(R.id.SubmitBtn);
         TextView state = findViewById(R.id.stateText);
         TextView success = findViewById(R.id.successText);
         TextView fail = findViewById(R.id.failText);
+        TextView log = findViewById(R.id.text_log);
 
-        ProgressBar bar = findViewById(R.id.progressBar);
+        ScrollView s = findViewById(R.id.logView);
 
         @SuppressLint("HandlerLeak") Handler h = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
+                s.fullScroll(ScrollView.FOCUS_DOWN);
                 switch (msg.what) {
+
                     case 0:
+                        s.setVisibility(View.VISIBLE);
                         btn_Start.setText("停止轰炸");
                         state.setText("正在轰炸");
                         success.setText("成功数:" + main.getSuccessNumber());
                         fail.setText("失败数:" + main.getFailNumber());
-                        bar.setVisibility(View.VISIBLE);
+                        if (setting.getBoolean("setting_log", true)) {
+                            log.setText(main.getLog());
+                        }
                         break;
+
                     case 1:
+                        s.setVisibility(View.INVISIBLE);
                         btn_Start.setText("开始轰炸");
                         state.setText("未开始");
                         success.setText("");
                         fail.setText("");
-                        bar.setVisibility(View.INVISIBLE);
+                        log.setText("");
                         break;
                 }
             }
@@ -99,5 +118,20 @@ public class MainActivity extends AppCompatActivity {
                 main.stop();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mainmenubar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        startActivity(new Intent(this, SettingsActivity.class));
+        return true;
+
+
     }
 }

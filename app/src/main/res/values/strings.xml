@@ -4,4 +4,7 @@
     <string name="urlTitle">Url:</string>
     <string name="StartBtnText">开始爆破</string>
     <string name="title_activity_entry">EntryActivity</string>
+    <string name="title_activity_settings">设置</string>
+
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>
