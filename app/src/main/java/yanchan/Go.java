@@ -109,8 +109,8 @@ public class Go {
     }
 
     public String getLog() {
-        if (builder.length() > 2000) {
-            builder.delete(0, 500);
+        if (builder.length() > 500) {
+            builder.delete(0, 400);
         }
         return builder.toString();
     }
@@ -126,7 +126,7 @@ public class Go {
                         if (delayed > 0) {
                             Thread.sleep(delayed);
                         } else {
-                            Thread.sleep(100);
+                            Thread.sleep(200);
                         }
                     } catch (Exception e) {
                         failNumber++;

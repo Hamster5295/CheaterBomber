@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(this);
-
         final Button btn_Start = findViewById(R.id.SubmitBtn);
         TextView state = findViewById(R.id.stateText);
         TextView success = findViewById(R.id.successText);
@@ -52,13 +50,16 @@ public class MainActivity extends AppCompatActivity {
                 switch (msg.what) {
 
                     case 0:
-                        s.setVisibility(View.VISIBLE);
                         btn_Start.setText("停止轰炸");
                         state.setText("正在轰炸");
                         success.setText("成功数:" + main.getSuccessNumber());
                         fail.setText("失败数:" + main.getFailNumber());
-                        if (setting.getBoolean("setting_log", true)) {
+                        if (SettingsActivity.setting == null) return;
+                        if (SettingsActivity.setting.getBoolean("setting_log", false)) {
                             log.setText(main.getLog());
+                            s.setVisibility(View.VISIBLE);
+                        } else {
+                            s.setVisibility(View.INVISIBLE);
                         }
                         break;
 
@@ -113,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
                 main.start();
 
             } else if (!main.isRunning()) {
+                int count;
+                try {
+                    count = Integer.parseInt(((EditText) findViewById(R.id.numBox)).getText().toString());
+                } catch (Exception e) {
+                    count = 1;
+                }
+                main.threadNumber = count;
                 main.start();
             } else {
                 main.stop();
