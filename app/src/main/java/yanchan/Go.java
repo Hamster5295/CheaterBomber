@@ -1,6 +1,9 @@
 package yanchan;
 
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.hamster5295.qq_harker_bomber.SettingUtil;
@@ -11,6 +14,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Base64;
@@ -39,8 +43,9 @@ public class Go {
     private int failNumber = 0;//失败数量
     private int dosNumber = 0;//总数量
     private long delayed = -1;//请求间隔
+    private Handler handler;
 
-    private StringBuilder builder = new StringBuilder();
+    private int rThreadNumber = 0;
 
     public Go(String url) {
         this(url, null);
@@ -90,19 +95,26 @@ public class Go {
      */
     public void start(boolean isGet) {
         isStart = true;
-        builder = new StringBuilder();
         successNumber = 0;
         failNumber = 0;
+        rThreadNumber = 0;
         if (!isGet)
             requestMethod = 1;
         else
             requestMethod = 0;
 
-        for (int i = 0; i < threadNumber; i++) {
-            thread();
-        }
+        new Thread(() -> {
+            for (int i = 0; i < threadNumber; i++) {
+                thread();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-
+                rThreadNumber++;
+            }
+        }).start();
     }
 
     /**
@@ -126,11 +138,8 @@ public class Go {
         return failNumber;
     }
 
-    public String getLog() {
-        if (builder.length() > 1000) {
-            builder.delete(0, 400);
-        }
-        return builder.toString();
+    public int getThreadNumberRealtime() {
+        return rThreadNumber;
     }
 
     private void thread() {
@@ -140,21 +149,41 @@ public class Go {
                 try {
                     play();
                     successNumber++;
-                    if (delayed > 0) {
-                        Thread.sleep(delayed);
-                    } else {
-                        Thread.sleep(200);
-                    }
+
                 } catch (Exception e) {
                     failNumber++;
 //                        e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
                         Log.e("CheaterBomber:", "链接超时");
-                        builder.append("错误:链接超时\n");
+                        Message msg = new Message();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("data", data);
+                        bundle.putInt("code", 1000);
+                        msg.setData(bundle);
+                        msg.what = 3;
+                        handler.sendMessage(msg);
+                    } else if (e instanceof MalformedURLException) {
+                        Message msg = new Message();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("data", data);
+                        bundle.putInt("code", 1001);
+                        msg.setData(bundle);
+                        msg.what = 3;
+                        handler.sendMessage(msg);
                     } else
                         e.printStackTrace();
                 }
                 dosNumber++;
+
+                try {
+                    if (delayed > 0) {
+                        Thread.sleep(delayed);
+                    } else {
+                        Thread.sleep(200);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
@@ -219,8 +248,15 @@ public class Go {
             }
             reader.close();
             System.out.println(sb.toString());
-            builder.append("Succeeded : " + data + "\n");
         }
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putString("data", data);
+        bundle.putInt("code", responseCode);
+        msg.setData(bundle);
+        msg.what = 3;
+        handler.sendMessage(msg);
+
         connection.disconnect();
 
     }
@@ -330,5 +366,9 @@ public class Go {
 
     public boolean isRunning() {
         return isStart;
+    }
+
+    public void setHandler(Handler handler) {
+        this.handler = handler;
     }
 }

@@ -176,6 +176,13 @@
                 android:textSize="24sp" />
 
             <TextView
+                android:id="@+id/threadText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1" />
+
+            <TextView
                 android:id="@+id/successText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -200,8 +207,10 @@
             android:visibility="invisible">
 
             <LinearLayout
+                android:id="@+id/log_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="10dp"
                 android:orientation="vertical">
 
                 <TextView

@@ -14,38 +14,45 @@
   ~ limitations under the License.
   -->
 
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="全局设置">
+        <SwitchPreference
+            android:icon="@drawable/ic_action_log"
+            android:key="setting_log"
+            android:summary="没啥卵用，但是看着很nb qwp"
+            android:title="显示控制台" />
+
+        <EditTextPreference
+            android:defaultValue="200"
+            android:icon="@drawable/ic_action_delay"
+            android:inputType="number"
+            android:key="setting_connectdelay"
+            android:summary="延时越小，轰炸速度越快，对手机CPU要求越高"
+            android:title="延迟毫秒数" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="针对性设置">
 
         <SwitchPreference
-            android:title = "显示控制台"
-            android:key = "setting_log"
-            android:summary = "没啥卵用，但是看着很nb qwp"
-            android:icon = "@drawable/ic_action_log"
-            />
+            android:icon="@drawable/ic_action_proxy"
+            android:key="setting_proxy"
+            android:summary="拖慢速度，但是对ip封禁机制的服务器有效 还没做完"
+            android:title="使用代理" />
 
         <SwitchPreference
-            android:title = "使用代理"
-            android:key = "setting_proxy"
-            android:summary = "拖慢速度，但是对ip封禁机制的服务器有效 还没做完"
-            android:icon = "@drawable/ic_action_proxy"
-            />
-
-        <SwitchPreference
-            android:title = "base64加密"
-            android:key = "setting_base64"
+            android:icon="@drawable/ic_action_base64"
+            android:key="setting_base64"
             android:summary="对于使用base64加密传输数据的服务器有效"
-            android:icon = "@drawable/ic_action_base64"
-            />
+            android:title="base64加密" />
 
         <SwitchPreference
-            android:title = "使用GET方法"
-            android:key = "setting_get"
+            android:icon="@drawable/ic_action_get"
+            android:key="setting_get"
             android:summary="对于使用GET方法和网址后缀传输数据的服务器有效"
-            android:icon = "@drawable/ic_action_get"
-            />
+            android:title="使用GET方法" />
 
     </PreferenceCategory>
 
