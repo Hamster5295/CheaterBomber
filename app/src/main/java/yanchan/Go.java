@@ -1,10 +1,21 @@
 package yanchan;
 
+import android.os.Build;
 import android.util.Log;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import com.hamster5295.qq_harker_bomber.SettingUtil;
+import com.hamster5295.qq_harker_bomber.SettingsActivity;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * 半成品，还没有完善，如有错误，欢迎指出
@@ -21,7 +32,7 @@ public class Go {
     public final static int GO_TYPE_GET = 0;//GET请求方式
     public final static int GO_TYPE_POST = 1;//POST请求方式
     public boolean randomData = false;//是否随机账户密码，默认否
-    public int RequestMethod = 1;//请求方式
+    public int requestMethod = 1;//请求方式
     public int responseCode = 0;//返回码
     private boolean isStart = true;//是否继续执行
     private int successNumber = 0;//成功数量
@@ -77,14 +88,21 @@ public class Go {
     /**
      * 开始
      */
-    public void start() {
+    public void start(boolean isGet) {
         isStart = true;
         builder = new StringBuilder();
         successNumber = 0;
         failNumber = 0;
+        if (!isGet)
+            requestMethod = 1;
+        else
+            requestMethod = 0;
+
         for (int i = 0; i < threadNumber; i++) {
             thread();
         }
+
+
     }
 
     /**
@@ -109,71 +127,86 @@ public class Go {
     }
 
     public String getLog() {
-        if (builder.length() > 500) {
+        if (builder.length() > 1000) {
             builder.delete(0, 400);
         }
         return builder.toString();
     }
 
     private void thread() {
-        new Thread() {
-            @Override
-            public void run() {
-                while (isStart) {
-                    try {
-                        play();
-                        successNumber++;
-                        if (delayed > 0) {
-                            Thread.sleep(delayed);
-                        } else {
-                            Thread.sleep(200);
-                        }
-                    } catch (Exception e) {
-                        failNumber++;
-//                        e.printStackTrace();
-                        if (e instanceof SocketTimeoutException) {
-                            Log.e("CheaterBomber:", "链接超时");
-                            builder.append("错误:链接超时\n");
-                        } else
-                            e.printStackTrace();
+        new Thread(() -> {
+
+            while (isStart) {
+                try {
+                    play();
+                    successNumber++;
+                    if (delayed > 0) {
+                        Thread.sleep(delayed);
+                    } else {
+                        Thread.sleep(200);
                     }
-                    dosNumber++;
+                } catch (Exception e) {
+                    failNumber++;
+//                        e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        Log.e("CheaterBomber:", "链接超时");
+                        builder.append("错误:链接超时\n");
+                    } else
+                        e.printStackTrace();
                 }
+                dosNumber++;
             }
-        }.start();
+        }).start();
     }
 
     private void play() throws IOException {
         URL u = new URL(url);
 
-        String name = "", pass = "";
-
-        HttpURLConnection connection = (HttpURLConnection) u.openConnection();
-        if (RequestMethod == 1) {
+        HttpURLConnection connection;
+        if (requestMethod == 1) {
+            connection = (HttpURLConnection) u.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setUseCaches(false);
             connection.setRequestMethod("POST");
             connection.setInstanceFollowRedirects(true);
         } else {
+            String name = datas.get("name");
+            String pass = datas.get("pass");
+            String prefix = datas.get("prefix");
+            data = "{\"" + name + "\":\"" + getRandom(false, false) + "\",\"" + pass + "\":\"" + getRandom(true, false) + "\"" + "}";
+
+            if (SettingUtil.getSettingBoolean("setting_base64")) {
+                u = new URL(url + "?" + prefix + "=" + android.util.Base64.encodeToString(data.getBytes(), android.util.Base64.DEFAULT));
+
+            } else {
+                u = new URL(url + "?" + prefix + "=" + data);
+            }
+
+            connection = (HttpURLConnection) u.openConnection();
+            //connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setUseCaches(false);
             connection.setRequestMethod("GET");
+            connection.setInstanceFollowRedirects(true);
         }
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
         connection.connect();
-        if (randomData && datas != null && !datas.isEmpty()) {
-            Random random = new Random();
-            int id = random.nextInt(999999) + 111111;//随机六位数
-            name = datas.get("name") + "=" + id;
-            pass = datas.get("pass") + "=" + id;
-            data = name + "&" + pass + "&" + datas.get("data");
-        }
-        if (data != null) {
-            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            out.write(data.getBytes("UTF-8"));
-            out.flush();
-            out.close();
+        if (requestMethod == 1) {
+            if (randomData && datas != null && !datas.isEmpty()) {
+                String name = datas.get("name") + "=" + getRandom(false, true);
+                String pass = datas.get("pass") + "=" + getRandom(true, true);
+
+                data = name + "&" + pass + "&" + datas.get("data");
+            }
+            if (data != null) {
+                DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+                out.write(data.getBytes("UTF-8"));
+                out.flush();
+                out.close();
+            }
         }
         responseCode = connection.getResponseCode();
         if (responseCode == 200) {
@@ -186,7 +219,7 @@ public class Go {
             }
             reader.close();
             System.out.println(sb.toString());
-            builder.append("Succeeded with the result 200" + name + pass + "\n");
+            builder.append("Succeeded : " + data + "\n");
         }
         connection.disconnect();
 
@@ -200,6 +233,25 @@ public class Go {
     public void setRandomData(boolean randomData) {
         this.randomData = randomData;
     }
+
+    public String getRandom(boolean is16, boolean isBase64) {
+        Random random = new Random();
+        int id = random.nextInt(999999) + 111111;//随机六位数
+
+
+        if (!SettingUtil.getSettingBoolean("setting_base64") || !isBase64) {
+            return is16 ? Integer.toHexString(id) : id + "";
+        } else {
+            //When SDK version is above 26,use class Base64 at java.util to make it faster
+            if (Build.VERSION.SDK_INT >= 26) {
+                return Base64.getEncoder().encodeToString(is16 ? Integer.toHexString(id).getBytes() : Integer.toString(id).getBytes());
+            } else {
+                return android.util.Base64.encodeToString(is16 ? Integer.toHexString(id).getBytes() : Integer.toString(id).getBytes(), android.util.Base64.DEFAULT);
+            }
+        }
+    }
+
+    ;
 
     //下面的注释我就不写了(偷懒)
 

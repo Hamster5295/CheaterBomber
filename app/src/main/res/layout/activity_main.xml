@@ -72,6 +72,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/text_extra"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
@@ -79,6 +80,17 @@
                     android:paddingRight="5dp"
                     android:text="额外数据:"
                     android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_prefix"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="前缀:"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -123,13 +135,23 @@
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/dataBox"
+                    android:id="@+id/extraBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="3dp"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/prefixBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
             </LinearLayout>
 
         </LinearLayout>

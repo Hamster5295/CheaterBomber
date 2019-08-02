@@ -20,7 +20,7 @@
     <PreferenceCategory app:title="全局设置">
 
         <SwitchPreference
-            android:title = "显示日志"
+            android:title = "显示控制台"
             android:key = "setting_log"
             android:summary = "没啥卵用，但是看着很nb qwp"
             android:icon = "@drawable/ic_action_log"
@@ -36,14 +36,14 @@
         <SwitchPreference
             android:title = "base64加密"
             android:key = "setting_base64"
-            android:summary="对于使用base64加密传输数据的服务器有效 还没做完"
+            android:summary="对于使用base64加密传输数据的服务器有效"
             android:icon = "@drawable/ic_action_base64"
             />
 
         <SwitchPreference
             android:title = "使用GET方法"
             android:key = "setting_get"
-            android:summary="对于使用GET方法和网址后缀传输数据的服务器有效 还没做完"
+            android:summary="对于使用GET方法和网址后缀传输数据的服务器有效"
             android:icon = "@drawable/ic_action_get"
             />
 
