@@ -7,8 +7,8 @@ android {
         applicationId "com.hamster5295.qq_harker_bomber"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 4
-        versionName "2.1.0"
+        versionCode 7
+        versionName "3.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
     }

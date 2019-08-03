@@ -1,4 +1,4 @@
-package yanchan;
+package com.hamster5295.qq_harker_bomber.Bomber.yanchan;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.hamster5295.qq_harker_bomber.SettingUtil;
-import com.hamster5295.qq_harker_bomber.SettingsActivity;
+import com.hamster5295.qq_harker_bomber.Bomber.Bomber;
+import com.hamster5295.qq_harker_bomber.Utils.SettingUtil;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -45,6 +45,8 @@ public class Go {
     private long delayed = -1;//请求间隔
     private Handler handler;
 
+    private Bomber bomber;
+
     private int rThreadNumber = 0;
 
     public Go(String url) {
@@ -53,6 +55,13 @@ public class Go {
 
     public Go(String url, String data) {
         this(url, data, 64);
+    }
+
+    public Go(Bomber bomber, Handler handler, int count) {
+        this.bomber = bomber;
+        this.handler = handler;
+        threadNumber = count;
+        isStart = false;
     }
 
     /**
@@ -117,11 +126,36 @@ public class Go {
         }).start();
     }
 
+    public void start() {
+        isStart = true;
+        successNumber = 0;
+        failNumber = 0;
+        rThreadNumber = 0;
+
+        new Thread(() -> {
+            for (int i = 0; i < threadNumber; i++) {
+                if (!isStart) return;
+
+                thread();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                rThreadNumber++;
+            }
+        }).start();
+    }
+
     /**
      * 停止
      */
     public void stop() {
         isStart = false;
+        successNumber = 0;
+        failNumber = 0;
+        rThreadNumber = 0;
     }
 
     /**
@@ -147,7 +181,7 @@ public class Go {
 
             while (isStart) {
                 try {
-                    play();
+                    playWithBomber();
                     successNumber++;
 
                 } catch (Exception e) {
@@ -254,7 +288,83 @@ public class Go {
         bundle.putString("data", data);
         bundle.putInt("code", responseCode);
         msg.setData(bundle);
-        msg.what = 3;
+        msg.what = 4;
+        handler.sendMessage(msg);
+
+        connection.disconnect();
+
+    }
+
+    private void playWithBomber() throws IOException {
+        URL u = new URL(bomber.getUrl());
+        HttpURLConnection connection;
+
+        String qwp = "";
+
+        String name = bomber.getUserKey();
+        String pass = bomber.getPasswordKey();
+        String extra = bomber.getExtra();
+        String prefix = bomber.getPrefix();
+
+        if (!bomber.getUseGet()) {
+            connection = (HttpURLConnection) u.openConnection();
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setUseCaches(false);
+            connection.setRequestMethod("POST");
+            connection.setInstanceFollowRedirects(true);
+            name = name + "=" + getRandom(false, true, bomber);
+            pass = pass + "=" + getRandom(true, true, bomber);
+            qwp = (bomber.getUsePrefix() ? prefix + "&" : "") + name + "&" + pass + "&" + (bomber.getUseExtra() ? extra : "");
+
+        } else {
+            qwp = "{\"" + name + "\":\"" + getRandom(false, false, bomber) + "\",\"" + pass + "\":\"" + getRandom(true, false, bomber) + "\"" + "}" + (bomber.getUsePrefix() ? extra : "");
+
+            if (SettingUtil.getSettingBoolean("setting_base64")) {
+                u = new URL(url + "?" + (bomber.getUsePrefix() ? prefix + "=" : "") + android.util.Base64.encodeToString(qwp.getBytes(), android.util.Base64.DEFAULT));
+
+            } else {
+                u = new URL(url + "?" + (bomber.getUsePrefix() ? prefix + "=" : "") + qwp);
+            }
+
+            connection = (HttpURLConnection) u.openConnection();
+            //connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setUseCaches(false);
+            connection.setRequestMethod("GET");
+            connection.setInstanceFollowRedirects(true);
+        }
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+        connection.connect();
+
+        if (bomber.getUseGet()) {
+
+            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+            out.write(data.getBytes("UTF-8"));
+            out.flush();
+            out.close();
+        }
+
+        responseCode = connection.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String lines;
+            StringBuffer sb = new StringBuffer();
+            sb.append(connection.getResponseCode() + " ");
+            while ((lines = reader.readLine()) != null) {
+                sb.append(lines);
+            }
+            reader.close();
+            System.out.println(sb.toString());
+        }
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putString("data", qwp);
+        bundle.putInt("code", responseCode);
+        msg.setData(bundle);
+        msg.what = 4;
         handler.sendMessage(msg);
 
         connection.disconnect();
@@ -287,7 +397,22 @@ public class Go {
         }
     }
 
-    ;
+    public String getRandom(boolean is16, boolean isBase64, Bomber bomber) {
+
+        int id = (int) Math.round(Math.random() * 1000000000);
+
+
+        if (!bomber.getUseBase64() || !isBase64) {
+            return is16 ? Integer.toHexString(id) : id + "";
+        } else {
+            //When SDK version is above 26,use class Base64 at java.util to make it faster
+            if (Build.VERSION.SDK_INT >= 26) {
+                return Base64.getEncoder().encodeToString(is16 ? Integer.toHexString(id).getBytes() : Integer.toString(id).getBytes());
+            } else {
+                return android.util.Base64.encodeToString(is16 ? Integer.toHexString(id).getBytes() : Integer.toString(id).getBytes(), android.util.Base64.DEFAULT);
+            }
+        }
+    }
 
     //下面的注释我就不写了(偷懒)
 

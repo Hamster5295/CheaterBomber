@@ -1,4 +1,4 @@
-package com.hamster5295.qq_harker_bomber;
+package com.hamster5295.qq_harker_bomber.Utils;
 
 import android.content.SharedPreferences;
 
@@ -16,6 +16,6 @@ public class SettingUtil {
         if (setting == null)
             return 0;
 
-        return setting.getInt(name, 0);
+        return Integer.parseInt(setting.getString(name, "200"));
     }
 }

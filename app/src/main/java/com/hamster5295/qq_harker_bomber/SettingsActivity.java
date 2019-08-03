@@ -1,16 +1,15 @@
 package com.hamster5295.qq_harker_bomber;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+
+import com.hamster5295.qq_harker_bomber.Utils.SettingUtil;
 
 public class SettingsActivity extends AppCompatActivity {
 

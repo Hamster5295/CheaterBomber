@@ -34,26 +34,4 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="针对性设置">
-
-        <SwitchPreference
-            android:icon="@drawable/ic_action_proxy"
-            android:key="setting_proxy"
-            android:summary="拖慢速度，但是对ip封禁机制的服务器有效 还没做完"
-            android:title="使用代理" />
-
-        <SwitchPreference
-            android:icon="@drawable/ic_action_base64"
-            android:key="setting_base64"
-            android:summary="对于使用base64加密传输数据的服务器有效"
-            android:title="base64加密" />
-
-        <SwitchPreference
-            android:icon="@drawable/ic_action_get"
-            android:key="setting_get"
-            android:summary="对于使用GET方法和网址后缀传输数据的服务器有效"
-            android:title="使用GET方法" />
-
-    </PreferenceCategory>
-
 </androidx.preference.PreferenceScreen>
