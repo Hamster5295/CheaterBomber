@@ -182,8 +182,6 @@ public class Go {
             while (isStart) {
                 try {
                     playWithBomber();
-                    successNumber++;
-
                 } catch (Exception e) {
                     failNumber++;
 //                        e.printStackTrace();
@@ -280,6 +278,8 @@ public class Go {
             while ((lines = reader.readLine()) != null) {
                 sb.append(lines);
             }
+
+            successNumber++;
             reader.close();
             System.out.println(sb.toString());
         }
@@ -315,7 +315,7 @@ public class Go {
             connection.setInstanceFollowRedirects(true);
             name = name + "=" + getRandom(false, true, bomber);
             pass = pass + "=" + getRandom(true, true, bomber);
-            qwp = (bomber.getUsePrefix() ? prefix + "&" : "") + name + "&" + pass + "&" + (bomber.getUseExtra() ? extra : "");
+            qwp = (bomber.getUsePrefix() ? prefix + "&" : "") + name + "&" + pass + (bomber.getUseExtra() ? "&" + extra : "");
 
         } else {
             qwp = "{\"" + name + "\":\"" + getRandom(false, false, bomber) + "\",\"" + pass + "\":\"" + getRandom(true, false, bomber) + "\"" + "}" + (bomber.getUsePrefix() ? extra : "");
@@ -359,6 +359,13 @@ public class Go {
             reader.close();
             System.out.println(sb.toString());
         }
+
+        if ((responseCode + "").startsWith("2") || (responseCode + "").startsWith("3")) {
+            successNumber++;
+        } else if ((responseCode + "").startsWith("4")) {
+            failNumber++;
+        }
+
         Message msg = new Message();
         Bundle bundle = new Bundle();
         bundle.putString("data", qwp);

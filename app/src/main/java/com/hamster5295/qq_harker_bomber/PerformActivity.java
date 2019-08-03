@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,7 +50,7 @@ public class PerformActivity extends AppCompatActivity {
         setContentView(R.layout.activity_perform);
 
         if (getIntent() != null) {
-            getIntent().getIntExtra("Index", 0);
+            index = getIntent().getIntExtra("Index", 0);
         }
         bomber = BomberData.getBomber(index);
 
@@ -96,20 +97,26 @@ public class PerformActivity extends AppCompatActivity {
                     switch (msg.getData().getInt("code")) {
                         case 200:
                             textView.setTextColor(Color.GREEN);
-                            textView.setText("Succeeded with code" + data.getInt("code") + " ,data: " + data.get("data") + "\n");
+                            textView.setText("Succeeded with code " + data.getInt("code") + " ,data: \n" + data.get("data") + "\n");
 
                             layout_cmd.addView(textView);
                             break;
 
                         case 302:
                             textView.setTextColor(Color.BLUE);
-                            textView.setText("Succeeded with code" + data.getInt("code") + " ,data: " + data.get("data") + "\n");
+                            textView.setText("Succeeded with code " + data.getInt("code") + " ,data: \n" + data.get("data") + "\n");
+                            layout_cmd.addView(textView);
+                            break;
+
+                        case 403:
+                            textView.setTextColor(Color.RED);
+                            textView.setText("Failed with code " + data.getInt("code") + ",\n兄dei你的连接被拒绝了，就像你表白女神一样\n");
                             layout_cmd.addView(textView);
                             break;
 
                         case 404:
                             textView.setTextColor(Color.RED);
-                            textView.setText("Failed with code" + data.getInt("code") + ",哥们URL写错了\n");
+                            textView.setText("Failed with code " + data.getInt("code") + ",哥们URL写错了\n");
                             layout_cmd.addView(textView);
                             break;
 
@@ -120,6 +127,8 @@ public class PerformActivity extends AppCompatActivity {
                             break;
                     }
                 }
+
+                Log.i("A", "handleMessage: ");
 
                 if (layout_cmd.getChildCount() > 12)
                     layout_cmd.removeViews(0, 2);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hamster5295.qq_harker_bomber.Bomber.Bomber;
+import com.hamster5295.qq_harker_bomber.Bomber.BomberData;
 import com.hamster5295.qq_harker_bomber.EditActivity;
 import com.hamster5295.qq_harker_bomber.PerformActivity;
 import com.hamster5295.qq_harker_bomber.R;
@@ -38,8 +40,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
     public void refresh(ArrayList<Bomber> a) {
         mList = a;
-        notifyItemChanged(0);
-
+        notifyItemChanged(mList.size() - 1);
     }
 
     @NonNull
@@ -56,13 +57,13 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
         v.getBtn_start().setOnClickListener((view) -> {
             Intent intent = new Intent(mContext, PerformActivity.class);
             intent.putExtra("Index", position);
-            mContext.startActivityForResult(intent,100);
+            mContext.startActivityForResult(intent, 100);
         });
 
         v.getBtn_edit().setOnClickListener(view -> {
             Intent intent = new Intent(mContext, EditActivity.class);
             intent.putExtra("Index", position);
-            mContext.startActivityForResult(intent,200);
+            mContext.startActivityForResult(intent, 200);
         });
     }
 

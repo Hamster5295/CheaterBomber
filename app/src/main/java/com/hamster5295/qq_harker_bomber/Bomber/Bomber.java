@@ -184,4 +184,9 @@ public class Bomber implements Parcelable, Serializable {
         p.writeInt(useBase64);
         p.writeInt(useProxy);
     }
+
+    @Override
+    public String toString() {
+        return url + "&" + description;
+    }
 }
