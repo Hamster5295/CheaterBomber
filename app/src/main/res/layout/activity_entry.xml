@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="V 3.0.1"
+            android:text="V 3.0.2"
             android:textSize="24sp" />
     </LinearLayout>
 

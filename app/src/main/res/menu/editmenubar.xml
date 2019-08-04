@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/btn_delete"
+        android:checkable="true"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_delete"
+        android:title="Delete"
+        android:visible="true"
+        app:showAsAction="always" />
+</menu>

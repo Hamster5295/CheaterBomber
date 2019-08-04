@@ -9,7 +9,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/btn_setting"
+        android:id="@+id/btn_delete"
         android:icon="@drawable/ic_action_setting"
         android:title="Setting"
         app:showAsAction="always" />

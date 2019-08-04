@@ -24,4 +24,8 @@ public class BomberData {
     public static void setBombers(ArrayList<Bomber> bombers) {
         BomberData.bombers = bombers;
     }
+
+    public static void removeBomber(int index) {
+        bombers.remove(index);
+    }
 }

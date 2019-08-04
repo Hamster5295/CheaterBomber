@@ -48,6 +48,9 @@ public class PerformActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perform);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setResult(-1);
 
         if (getIntent() != null) {
             index = getIntent().getIntExtra("Index", 0);
@@ -178,5 +181,15 @@ public class PerformActivity extends AppCompatActivity {
     protected void onDestroy() {
         thread_update_flag = false;
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

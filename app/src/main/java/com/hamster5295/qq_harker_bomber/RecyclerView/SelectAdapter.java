@@ -40,7 +40,9 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
     public void refresh(ArrayList<Bomber> a) {
         mList = a;
-        notifyItemChanged(mList.size() - 1);
+        for (int i = 0; i < mList.size(); i++) {
+            notifyItemChanged(i);
+        }
     }
 
     @NonNull

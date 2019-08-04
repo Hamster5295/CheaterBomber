@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -38,6 +39,7 @@ public class EditActivity extends AppCompatActivity {
     private Switch switch_base64;
     private Switch switch_extra;
     private Switch switch_prefix;
+    private Switch switch_get;
 
     @SuppressLint("HandlerLeak")
     private Handler uiHandler = new Handler() {
@@ -68,6 +70,8 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setResult(-1);
+
         if (getIntent() != null) {
             index = getIntent().getIntExtra("Index", 0);
         }
@@ -88,7 +92,7 @@ public class EditActivity extends AppCompatActivity {
         switch_base64 = findViewById(R.id.switch_base64);
         switch_extra = findViewById(R.id.switch_extra);
         switch_prefix = findViewById(R.id.switch_prefix);
-
+        switch_get = findViewById(R.id.switch_get);
 
         edit_url.setText(bomber.getUrl());
         edit_user.setText(bomber.getUserKey());
@@ -115,6 +119,10 @@ public class EditActivity extends AppCompatActivity {
         switch_prefix.setOnClickListener(view -> {
             bomber.setUsePrefix(switch_prefix.isChecked());
         });
+
+        switch_get.setOnClickListener(view -> {
+            bomber.setUseGet(switch_get.isChecked());
+        });
     }
 
     @Override
@@ -124,6 +132,12 @@ public class EditActivity extends AppCompatActivity {
                 //TODO: Save edit.
                 saveToBomber();
                 thread_checkUsage_flag = false;
+                finish();
+                return true;
+
+            case R.id.btn_delete:
+                BomberData.removeBomber(index);
+                setResult(index);
                 finish();
                 return true;
         }
@@ -152,5 +166,11 @@ public class EditActivity extends AppCompatActivity {
         saveToBomber();
         thread_checkUsage_flag = false;
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.editmenubar,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

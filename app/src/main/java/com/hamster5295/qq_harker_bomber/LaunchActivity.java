@@ -20,11 +20,9 @@ import com.hamster5295.qq_harker_bomber.RecyclerView.SelectAdapter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class LaunchActivity extends AppCompatActivity {
@@ -52,8 +50,8 @@ public class LaunchActivity extends AppCompatActivity {
 
         adapter.refresh(BomberData.getBombers());
 
-        new Thread(()->{
-            while(true){
+        new Thread(() -> {
+            while (true) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -78,9 +76,12 @@ public class LaunchActivity extends AppCompatActivity {
             case R.id.btn_add:
                 BomberData.putBomber(new Bomber());
                 adapter.refresh(BomberData.getBombers());
+                Intent intent = new Intent(LaunchActivity.this, EditActivity.class);
+                intent.putExtra("Index", adapter.getItemCount()-1);
+                startActivityForResult(intent, 200);
                 break;
 
-            case R.id.btn_setting:
+            case R.id.btn_delete:
                 startActivity(new Intent(LaunchActivity.this, SettingsActivity.class));
                 break;
         }
@@ -93,6 +94,10 @@ public class LaunchActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         adapter.refresh(BomberData.getBombers());
+
+        if (resultCode >= 0) {
+            adapter.notifyItemRangeRemoved(resultCode, 1);
+        }
     }
 
     @Override
