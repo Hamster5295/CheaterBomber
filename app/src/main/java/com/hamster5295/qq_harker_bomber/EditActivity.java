@@ -155,6 +155,7 @@ public class EditActivity extends AppCompatActivity {
         bomber.setUseBase64(switch_base64.isChecked());
         bomber.setUseExtra(switch_extra.isChecked());
         bomber.setUsePrefix(switch_prefix.isChecked());
+        bomber.setUseGet(switch_get.isChecked());
 //        bomber.setUseProxy();
 
         BomberData.setBomber(index, bomber);
@@ -170,7 +171,7 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.editmenubar,menu);
+        getMenuInflater().inflate(R.menu.editmenubar, menu);
         return super.onCreateOptionsMenu(menu);
     }
 }

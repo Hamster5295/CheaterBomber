@@ -125,7 +125,7 @@ public class PerformActivity extends AppCompatActivity {
 
                         default:
                             textView.setTextColor(Color.RED);
-                            textView.setText("未知错误qnq\n");
+                            textView.setText("Failed with code " + data.getInt("code") + " 未知错误qnq\n");
                             layout_cmd.addView(textView);
                             break;
                     }
