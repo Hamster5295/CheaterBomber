@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hamster5295.qq_harker_bomber">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,21 +10,17 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".FormatActivity"></activity>
         <activity
             android:name=".EditActivity"
             android:label="编辑">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LaunchActivity" />
-
         </activity>
-
         <activity
             android:name=".PerformActivity"
             android:label="轰炸" />
-
         <activity android:name=".LaunchActivity" />
         <activity
             android:name=".SettingsActivity"
@@ -39,5 +33,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

@@ -110,9 +110,6 @@ public class LaunchActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                saveFile();
-                super.onKeyDown(keyCode, event);
-                return true;
 
             case KeyEvent.KEYCODE_HOME:
                 saveFile();

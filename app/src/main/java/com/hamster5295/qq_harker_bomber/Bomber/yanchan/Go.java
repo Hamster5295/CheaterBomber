@@ -299,12 +299,23 @@ public class Go {
         URL u = new URL(bomber.getUrl());
         HttpURLConnection connection;
 
-        String qwp = "";
+        StringBuilder qwp = new StringBuilder();
 
-        String name = bomber.getUserKey();
-        String pass = bomber.getPasswordKey();
-        String extra = bomber.getExtra();
-        String prefix = bomber.getPrefix();
+        for (int i = 0; i < bomber.getFormat().size(); i++) {
+            switch (bomber.getFormat().get(i)) {
+                case "%Random_Number%":
+                    qwp.append(getRandom(false, bomber.getUseBase64()));
+                    break;
+
+                case "%Random_Password%":
+                    qwp.append(getRandom(true, bomber.getUseBase64()));
+                    break;
+
+                default:
+                    qwp.append(bomber.getFormat().get(i));
+                    break;
+            }
+        }
 
         if (!bomber.getUseGet()) {
             connection = (HttpURLConnection) u.openConnection();
@@ -313,20 +324,8 @@ public class Go {
             connection.setUseCaches(false);
             connection.setRequestMethod("POST");
             connection.setInstanceFollowRedirects(true);
-            name = name + "=" + getRandom(false, true, bomber);
-            pass = pass + "=" + getRandom(true, true, bomber);
-            qwp = (bomber.getUsePrefix() ? prefix + "&" : "") + name + "&" + pass + (bomber.getUseExtra() ? "&" + extra : "");
-
         } else {
-            qwp = "{\"" + name + "\":\"" + getRandom(false, false, bomber) + "\",\"" + pass + "\":\"" + getRandom(true, false, bomber) + "\"" + "}" + (bomber.getUsePrefix() ? extra : "");
-
-            if (SettingUtil.getSettingBoolean("setting_base64")) {
-                u = new URL(url + "?" + (bomber.getUsePrefix() ? prefix + "=" : "") + android.util.Base64.encodeToString(qwp.getBytes(), android.util.Base64.DEFAULT));
-
-            } else {
-                u = new URL(url + "?" + (bomber.getUsePrefix() ? prefix + "=" : "") + qwp);
-            }
-
+            u = new URL(bomber.getUrl() + "?" + qwp);
             connection = (HttpURLConnection) u.openConnection();
             //connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -339,10 +338,10 @@ public class Go {
         connection.setReadTimeout(5000);
         connection.connect();
 
-        if (bomber.getUseGet()) {
+        if (!bomber.getUseGet()) {
 
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            out.write(data.getBytes("UTF-8"));
+            out.write(qwp.toString().getBytes("UTF-8"));
             out.flush();
             out.close();
         }
@@ -368,7 +367,7 @@ public class Go {
 
         Message msg = new Message();
         Bundle bundle = new Bundle();
-        bundle.putString("data", qwp);
+        bundle.putString("data", qwp.toString());
         bundle.putInt("code", responseCode);
         msg.setData(bundle);
         msg.what = 4;
@@ -389,10 +388,10 @@ public class Go {
 
     public String getRandom(boolean is16, boolean isBase64) {
         Random random = new Random();
-        int id = random.nextInt(999999) + 111111;//随机六位数
+        int id = (int) Math.round(Math.random() * 1000000000L);
 
 
-        if (!SettingUtil.getSettingBoolean("setting_base64") || !isBase64) {
+        if (!isBase64) {
             return is16 ? Integer.toHexString(id) : id + "";
         } else {
             //When SDK version is above 26,use class Base64 at java.util to make it faster
@@ -406,7 +405,7 @@ public class Go {
 
     public String getRandom(boolean is16, boolean isBase64, Bomber bomber) {
 
-        int id = (int) Math.round(Math.random() * 1000000000);
+        int id = (int) Math.round(Math.random() * 1000000000L);
 
 
         if (!bomber.getUseBase64() || !isBase64) {

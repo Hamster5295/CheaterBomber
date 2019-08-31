@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <TextView
                 android:id="@+id/text_url"
                 android:layout_width="wrap_content"
@@ -36,107 +35,7 @@
                 android:ems="10"
                 android:inputType="textUri|textPersonName" />
 
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_user"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:text="UserKey:"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/editText_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textUri|textPersonName" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_pass"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:text="PasswordKey:"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/editText_pass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textUri|textPersonName" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_extra"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_extra"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:text="额外数据"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/editText_extra"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textUri|textPersonName" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_prefix"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_prefix"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:text="前缀:"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/editText_prefix"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textUri|textPersonName" />
 
         </LinearLayout>
 
@@ -163,37 +62,18 @@
                 android:ems="10"
                 android:inputType="textUri|textPersonName" />
 
+
+
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btn_format"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="编辑数据格式" />
+
     </LinearLayout>
-
-    <Switch
-        android:id="@+id/switch_extra"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:checked="false"
-        android:padding="10dp"
-        android:text="使用额外数据"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/switch_prefix"
-        tools:layout_editor_absoluteX="10dp" />
-
-    <Switch
-        android:id="@+id/switch_prefix"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:padding="10dp"
-        android:text="使用前缀"
-        android:textOff="OFF"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/switch_base64"
-        tools:layout_editor_absoluteX="10dp" />
 
     <Switch
         android:id="@+id/switch_base64"
