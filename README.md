@@ -3,3 +3,4 @@
 An app that can stop harkers from stealing accounts from a highly-Imitated website by posting junk information.
 
 感谢B站用户 @眼馋QAQ 的代码支持(Go.java,GoMain.java)
+(现在已经用新代码了)
